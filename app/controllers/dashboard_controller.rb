@@ -1,4 +1,7 @@
 class DashboardController < ApplicationController
-    def index
+    def login
+    end
+
+    def home
     end
 end

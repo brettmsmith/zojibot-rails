@@ -53,5 +53,6 @@ Rails.application.routes.draw do
   #     # (app/controllers/admin/products_controller.rb)
   #     resources :products
   #   end
-  get '/' => 'dashboard#index'
+  get '/' => 'dashboard#login'
+  get '/dashboard' => 'dashboard#home'
 end
