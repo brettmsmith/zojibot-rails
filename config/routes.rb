@@ -55,4 +55,5 @@ Rails.application.routes.draw do
   #   end
   get '/' => 'dashboard#login'
   get '/dashboard' => 'dashboard#home'
+  get '/callback' => 'dashboard#callback'
 end
