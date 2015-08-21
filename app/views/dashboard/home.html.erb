@@ -1,11 +1,18 @@
 <head>
     <title>Dashboard | Zojibot</title>
 </head>
-<div class="container-row">
+<div class="container-fluid">
+    <ul class="nav nav-tabs">
+      <li role="presentation" class="active"><a href="#">Status</a></li>
+      <li role="presentation"><a href="#">Commands</a></li>
+      <li role="presentation"><a href="#">Settings</a></li>
+    </ul>
+</div>
+<div class="container-fluid">
     <div class="row">
         <div class="col-md-4">
             <h1>Dashboard</h1>
-            <p><%=session[:name]%>'s page</p>
+            <p id="test"><%=session[:name]%>'s page</p>
         </div>
     </div>
 </div>
