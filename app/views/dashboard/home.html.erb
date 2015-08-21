@@ -3,16 +3,28 @@
 </head>
 <div class="container-fluid">
     <ul class="nav nav-tabs">
-      <li role="presentation" class="active"><a href="#">Status</a></li>
-      <li role="presentation"><a href="#">Commands</a></li>
-      <li role="presentation"><a href="#">Settings</a></li>
+      <li role="presentation" class="active" id="statustab"><a href="#">Status</a></li>
+      <li role="presentation" id="commandtab"><a href="#">Commands</a></li>
+      <li role="presentation" id="settingstab"><a href="#">Settings</a></li>
     </ul>
 </div>
-<div class="container-fluid">
+<div class="container-fluid" id="status">
     <div class="row">
         <div class="col-md-4">
             <h1>Dashboard</h1>
             <p id="test"><%=session[:name]%>'s page</p>
         </div>
+    </div>
+</div>
+
+<div class="container-fluid" id="commands">
+    <div class="row">
+        <h1>Commands</h1>
+    </div>
+</div>
+
+<div class="container-fluid" id="settings">
+    <div class="row">
+        <h1>Settings</h1>
     </div>
 </div>
