@@ -12,6 +12,11 @@
 #do stuff(like ajax hooks). I'm not sure how to include ruby code on stuff without
 #it actually doing it the first time.*/
 
+//I could have a pid var I set at the beginning and set by getting from app
+//Later I could set up an semi constant alarm thing to make sure nothing has changed
+var pid;
+var base = "http://localhost:3000"
+
 
 $(document).ready(function(){
     $("#statustab").click(function(){
@@ -23,7 +28,7 @@ $(document).ready(function(){
         $("#statustab").addClass("active");
     });
     $("#commandtab").click(function(){
-        $("#status").hide();//add fancy fading or something
+        $("#status").hide();
         $("#settings").hide();
         $("#commands").fadeIn();
         $("#statustab").removeClass("active");
@@ -40,5 +45,51 @@ $(document).ready(function(){
     });
     $("#commands").hide();
     $("#settings").hide();
-
+    checkBotStatus(pageLoad)
 });
+
+function checkBotStatus(fun){
+    $.ajax({
+        url: base+"/bot",//do I need to add a random number to anti-cache?
+        data:{user: username, token: usertoken}
+    }).done(fun(data));
+}
+
+function pageLoad(data){
+    if(data == 0){
+        $("#botbutton").addClass("btn-bot-start");
+        $("#botbutton").html("Start bot");
+    }
+    else {
+        $("#botbutton").addClass("btn-bot-start");
+        $("#botbutton").html("Stop bot");
+    }
+}
+
+function botLogic(data){
+    if(data == 0){
+        $.ajax({
+            url: base+"/start",
+            data: {user: username, token: usertoken}
+        }).done(function(res){
+            if (res == "Success") {
+                pageLoad(1);
+            }
+        });
+    }
+    else{
+        $.ajax({
+            url: base+"/stop",
+            data: {user: username, token: usertoken}
+        }).done(function(res){
+            if(res == "Success"){
+                pageLoad(0);
+            }
+        })
+    }
+}
+
+function toggleBot(){//get pid, if 0, start the bot, otherwise stop the bot
+    $("#botbutton").html("Working...");
+    checkBotStatus(botLogic);
+}

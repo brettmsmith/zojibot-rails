@@ -31,9 +31,15 @@ class DashboardController < ApplicationController
             newuser = User.new
             newuser.username = session[:name]
             newuser.pid = 0
+            session[:usertoken] = ('a'..'z').to_a.shuffle[0,8].join
+            newuser.token = session[:usertoken]
             newuser.save
+        else
+            session[:usertoken] = ('a'..'z').to_a.shuffle[0,8].join
+            user.token = session[:usertoken]
+            user.save
+            puts "user token is: #{session[:usertoken]}"
         end
-        @userobject = newuser
         puts "Sessioned name: #{session[:name]}"
         redirect_to "/dashboard"
     end
@@ -42,34 +48,42 @@ class DashboardController < ApplicationController
     end
 
     def bot
-        user = User.find_by(username: params[:username])
-        if !user.nil?
+        user = User.find_by(username: params[:user])
+        if !user.nil? && user.token == params[:token]
+            puts "User found"
             render plain: "#{user.pid}"
         else
+            puts "No user found"
             render plain: "-1"
         end
     end
 
     def start
-        if session[:name] == params[:username]
-            user = User.find_by(:username session[:name])
-            bot = fork do
-                exec "python bot.py #{session[:name]}"
+        if !params[:user].nil?
+            user = User.find_by(username: params[:user])
+            if user.token == params[:token]
+                bot = fork do
+                    exec "python bot.py #{params[:user]}"
+                end
+                user.pid = bot
+                Process.detach(bot)
+                render plain: "Success"
+                return
             end
-            user.pid = bot
-            Process.detach(bot)
         end
+        render plain: "Error"
     end
 
     def stop
-        if session[:name] == params[:username]
-            user = User.find_by(:username session[:name])
-            if user.pid != 0 #TODO: Need to solve if bot doesn't die
+        if !params[:user].nil?
+            user = User.find_by(username: params[:user])
+            if user.pid != 0 && user.token == params[:token]#TODO: Need to solve if bot doesn't die
                 Process.kill("SIGTERM", user.pid)
                 user.pid = 0
                 render plain: "Success"
                 return
             end
+            render plain: "Error"
         end
     end
 end

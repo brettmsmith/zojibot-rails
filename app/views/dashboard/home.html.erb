@@ -13,6 +13,7 @@
         <div class="col-md-4">
             <h1>Status</h1>
             <p id="test"><%=session[:name]%>'s page</p>
+            <button id="botbutton" onclick="toggleBot()" class="btn btn-default">Start bot</button><%#use #id.html jquery to change button text%>
         </div>
     </div>
 </div>
@@ -44,3 +45,8 @@
         <h1>Settings</h1>
     </div>
 </div>
+<%puts "user token: #{session[:usertoken]}"%>
+<%= javascript_tag do %>
+  window.usertoken = '<%= j session[:usertoken] %>';
+  window.username = '<%= j session[:name]%>';
+<% end %>

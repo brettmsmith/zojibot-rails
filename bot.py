@@ -14,7 +14,7 @@ app = Flask(__name__) #TODO: get some real sqlalchemy in here
 app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]#'postgresql://localhost/test.db'
 db = SQLAlchemy(app)
 
-
+#TODO: Make a stop bot command from chat?
 try:
     CHANNEL = sys.argv[1]
 except:

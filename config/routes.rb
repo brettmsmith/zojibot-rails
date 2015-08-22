@@ -58,7 +58,7 @@ Rails.application.routes.draw do
   get '/dashboard' => 'dashboard#home'
   get '/callback' => 'dashboard#callback'
   get '/about' => 'dashboard#about'
-  get '/:username/bot' => 'dashboard#bot'
-  get '/:username/start' => 'dashboard#start'
-  get '/:username/stop' => 'dashboard#stop'
+  get '/bot' => 'dashboard#bot'
+  get '/start' => 'dashboard#start'
+  get '/stop' => 'dashboard#stop'
 end
