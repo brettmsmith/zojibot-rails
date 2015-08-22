@@ -17,11 +17,18 @@ ActiveRecord::Schema.define(version: 20150811220231) do
   enable_extension "plpgsql"
 
   create_table "commands", force: :cascade do |t|
+    t.string   "call"
+    t.string   "response"
+    t.integer  "userlevel"
+    t.string   "username"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
   create_table "users", force: :cascade do |t|
+    t.string   "username"
+    t.integer  "pid"
+    t.integer  "command_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -3,7 +3,7 @@ class CreateCommands < ActiveRecord::Migration
     create_table :commands do |t|
         t.string :call
         t.string :response
-        t.int :userlevel
+        t.integer :userlevel
         t.string :username
       t.timestamps null: false
     end

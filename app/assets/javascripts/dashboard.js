@@ -12,6 +12,7 @@
 #do stuff(like ajax hooks). I'm not sure how to include ruby code on stuff without
 #it actually doing it the first time.*/
 
+
 $(document).ready(function(){
     $("#statustab").click(function(){
         $("#commands").hide();
@@ -39,4 +40,5 @@ $(document).ready(function(){
     });
     $("#commands").hide();
     $("#settings").hide();
+
 });

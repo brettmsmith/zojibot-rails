@@ -25,11 +25,52 @@ class DashboardController < ApplicationController
         puts "Sessioning: #{response['access_token']}"
         session[:token] = response['access_token']
         session[:name] = api.getName(session[:token])
+        user = User.find_by(username: session[:name])
+        if user.nil?
+            puts "User is nil, need to create user"
+            newuser = User.new
+            newuser.username = session[:name]
+            newuser.pid = 0
+            newuser.save
+        end
+        @userobject = newuser
         puts "Sessioned name: #{session[:name]}"
         redirect_to "/dashboard"
     end
 
     def home
+    end
+
+    def bot
+        user = User.find_by(username: params[:username])
+        if !user.nil?
+            render plain: "#{user.pid}"
+        else
+            render plain: "-1"
+        end
+    end
+
+    def start
+        if session[:name] == params[:username]
+            user = User.find_by(:username session[:name])
+            bot = fork do
+                exec "python bot.py #{session[:name]}"
+            end
+            user.pid = bot
+            Process.detach(bot)
+        end
+    end
+
+    def stop
+        if session[:name] == params[:username]
+            user = User.find_by(:username session[:name])
+            if user.pid != 0 #TODO: Need to solve if bot doesn't die
+                Process.kill("SIGTERM", user.pid)
+                user.pid = 0
+                render plain: "Success"
+                return
+            end
+        end
     end
 end
 
@@ -51,7 +92,7 @@ class TwitchAPI
     def authorize(authcode)
         #data = {'client_id'=>@clientid, 'client_secret'=>@clientsecret, 'grant_type'=>'authorization_code','redirect_uri'=>@redirect, 'code'=>authcode}.to_json
         body = begin
-            RestClient.post "#{@base}/oauth2/token",{:client_id=>@clientid, :client_secret=>@clientsecret, :grant_type=>'authorization_code',:redirect_uri=>@redirect, :code=>authcode, :state=>''}, {:Accept=>'application/vnd.twitchtv.v3+json'}
+            RestClient.post "#{@base}/oauth2/token",{:client_id=>@clientid, :client_secret=>@clientsecret, :grant_type=>'authorization_code',:redirect_uri=>@redirect, :code=>authcode}, {:Accept=>'application/vnd.twitchtv.v3+json'}
             #RestClient.post "#{@base}/oauth2/token?client_id=#{@clientid}&client_secret=#{@clientsecret}&grant_type=authorization_code&redirect_uri=#{@redirect}&code=#{authcode}"#&state=[your provided unique token]
         rescue => e
             puts e.response.body
