@@ -16,52 +16,50 @@
 //Later I could set up an semi constant alarm thing to make sure nothing has changed
 var pid;
 var base = "http://localhost:3000"
+var page = 1;
 
-
-$(document).ready(function(){
-    $("#statustab").click(function(){
-        $("#commands").hide();
-        $("#settings").hide();
-        $("#status").fadeIn();
-        $("#commandtab").removeClass("active");
-        $("#settingstab").removeClass("active");
-        $("#statustab").addClass("active");
-    });
-    $("#commandtab").click(function(){
-        $("#status").hide();
-        $("#settings").hide();
-        $("#commands").fadeIn();
-        $("#statustab").removeClass("active");
-        $("#settingstab").removeClass("active");
-        $("#commandtab").addClass("active");
-    });
-    $("#settingstab").click(function(){
-        $("#status").hide();
-        $("#commands").hide();
-        $("#settings").fadeIn();
-        $("#statustab").removeClass("active");
-        $("#commandtab").removeClass("active");
-        $("#settingstab").addClass("active");
-    });
+//$(document).ready(function(){
+function load(){//TODO: Fix this hack
+    page = 1;
+    console.log("Document.ready");
+    $("#statustab").click(statusclick);
+    $("#commandtab").click(commandclick);
+    $("#settingstab").click(settingsclick);
     $("#commands").hide();
     $("#settings").hide();
-    checkBotStatus(pageLoad)
-});
+    checkBotStatus(pageLoad);
+    //formid.submit(callback) for adding a command
+}
+//});
+
+function getCommands(batch){
+    $.ajax({
+        url: base+"/commands",
+        data: {user:username, token: usertoken, batch: batch}
+    }).done(function(data){
+        console.log("Commands response: "+data)
+        if(data != "{}")
+        return JSON.parse(data);
+    })
+}
 
 function checkBotStatus(fun){
     $.ajax({
         url: base+"/bot",//do I need to add a random number to anti-cache?
         data:{user: username, token: usertoken}
-    }).done(fun(data));
+    }).done(fun);
 }
 
 function pageLoad(data){
+    console.log("In pageLoad, data is: "+data);
     if(data == 0){
+        $("#botbutton").removeClass("btn-bot-stop");
         $("#botbutton").addClass("btn-bot-start");
         $("#botbutton").html("Start bot");
     }
     else {
-        $("#botbutton").addClass("btn-bot-start");
+        $("#botbutton").removeClass("btn-bot-start");
+        $("#botbutton").addClass("btn-bot-stop");
         $("#botbutton").html("Stop bot");
     }
 }
@@ -89,7 +87,39 @@ function botLogic(data){
     }
 }
 
+function loadCommands(commands){
+    commands.commands[]
+}
+
 function toggleBot(){//get pid, if 0, start the bot, otherwise stop the bot
     $("#botbutton").html("Working...");
     checkBotStatus(botLogic);
+}
+
+function statusclick(){
+    $("#commands").hide();
+    $("#settings").hide();
+    $("#status").fadeIn();
+    $("#commandtab").removeClass("active");
+    $("#settingstab").removeClass("active");
+    $("#statustab").addClass("active");
+}
+
+function commandclick(){
+    $("#status").hide();
+    $("#settings").hide();
+    $("#commands").fadeIn();
+    $("#statustab").removeClass("active");
+    $("#settingstab").removeClass("active");
+    $("#commandtab").addClass("active");
+    loadCommands(getCommands(page));
+}
+
+function settingsclick(){
+    $("#status").hide();
+    $("#commands").hide();
+    $("#settings").fadeIn();
+    $("#statustab").removeClass("active");
+    $("#commandtab").removeClass("active");
+    $("#settingstab").addClass("active");
 }

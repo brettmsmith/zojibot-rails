@@ -5,3 +5,5 @@
 #
 #   cities = City.create([{ name: 'Chicago' }, { name: 'Copenhagen' }])
 #   Mayor.create(name: 'Emanuel', city: cities.first)
+    Command.create(call: "!hi", response: "yo", userlevel: 0, username:"callmezoji")
+    Command.create(call: "!hola", response: "hi", userlevel: 0, username:"callmezoji")

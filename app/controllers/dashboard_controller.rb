@@ -45,6 +45,9 @@ class DashboardController < ApplicationController
     end
 
     def home
+        if session[:name].nil?
+            redirect_to "/"
+        end
     end
 
     def bot
@@ -84,6 +87,25 @@ class DashboardController < ApplicationController
                 return
             end
             render plain: "Error"
+        end
+    end
+
+    def commands#should be given either all or a number representing the nth batch of 10
+        if !params[:user].nil?
+            user = User.find_by(username: params[:user])
+            if user.token == params[:token]
+                if params[:batch] == "all"
+                    commands = Command.where(username: params[:user])
+                    res = "{ \"commands\":["
+                    commands.each do |c|
+                        res = "#{res} #{c.as_json.to_json},"
+                    end
+                    render plain: "#{res[0..-2]}]}"
+                    return
+                else#batch num
+
+                end
+            end
         end
     end
 end

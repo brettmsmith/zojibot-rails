@@ -2,7 +2,7 @@
 import sys, socket, string, re, os
 from flask import Flask
 from flask.ext.sqlalchemy import SQLAlchemy
-from webapp import Command
+#from webapp import Command
 
 global HOST, PORT, PASS, NICK, CHANNEL, db
 HOST = "irc.twitch.tv"

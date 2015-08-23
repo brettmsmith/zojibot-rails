@@ -61,4 +61,5 @@ Rails.application.routes.draw do
   get '/bot' => 'dashboard#bot'
   get '/start' => 'dashboard#start'
   get '/stop' => 'dashboard#stop'
+  get '/commands' => 'dashboard#commands'
 end
