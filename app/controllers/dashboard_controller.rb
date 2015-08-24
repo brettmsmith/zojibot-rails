@@ -29,7 +29,11 @@ class DashboardController < ApplicationController
         puts "Sessioning: #{response['access_token']}"
         session[:token] = response['access_token']
         session[:name] = api.getName(session[:token])
-        user = User.find_by(username: session[:name])
+        begin
+            user = User.find_by(username: session[:name])
+        end
+    rescue => e
+        puts "DATABASE ERROR IN CALLBACK: #{e.response.body}"
         if user.nil?
             puts "User is nil, need to create user"
             newuser = User.new
