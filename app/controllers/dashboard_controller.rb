@@ -2,13 +2,14 @@ require 'json'
 require 'rest-client'
 
 class DashboardController < ApplicationController
-    @redirect = 'http://zojibot.herokuapp.com/callback'
-    #@redirect = "http://localhost:3000/callback"
+
     def index
     end
 
     def login
         #redirect to twitch login (redirect_to())
+        @redirect = 'http://zojibot.herokuapp.com/callback'
+        #@redirect = "http://localhost:3000/callback"
         puts "Session token: #{session[:token]}"
         if session[:token].nil?
             redirect_to "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=#{ENV['CLIENTID']}&redirect_uri=#{@redirect}"
