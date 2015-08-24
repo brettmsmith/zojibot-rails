@@ -2,7 +2,7 @@ require 'json'
 require 'rest-client'
 
 class DashboardController < ApplicationController
-    @redirect = 'http://zojibot.herokuapp.com'
+    @redirect = 'http://zojibot.herokuapp.com/callback'
     #@redirect = "http://localhost:3000/callback"
     def index
     end
