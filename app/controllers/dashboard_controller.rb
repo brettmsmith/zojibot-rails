@@ -24,6 +24,7 @@ class DashboardController < ApplicationController
         puts "Got to callback"
         @usercode = params[:code]
         api = TwitchAPI.new()
+        puts "CODE FROM TWITCH: #{@usercode}"
         response = api.authorize(@usercode)
         puts "Sessioning: #{response['access_token']}"
         session[:token] = response['access_token']
@@ -164,7 +165,7 @@ class TwitchAPI
             RestClient.post "#{@base}/oauth2/token",{:client_id=>@clientid, :client_secret=>@clientsecret, :grant_type=>'authorization_code',:redirect_uri=>@redirect, :code=>authcode}, {:Accept=>'application/vnd.twitchtv.v3+json'}
             #RestClient.post "#{@base}/oauth2/token?client_id=#{@clientid}&client_secret=#{@clientsecret}&grant_type=authorization_code&redirect_uri=#{@redirect}&code=#{authcode}"#&state=[your provided unique token]
         rescue => e
-            puts e.response.body
+            puts "Error getting token: #{e.response.body}"
         end
         puts "Token response: #{body}"
         res = JSON.parse(body)
