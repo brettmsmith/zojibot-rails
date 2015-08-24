@@ -33,7 +33,8 @@ class DashboardController < ApplicationController
             user = User.find_by(username: session[:name])
         end
     rescue => e
-        puts "DATABASE ERROR IN CALLBACK: #{e.response.body}"
+        puts "DATABASE ERROR IN CALLBACK: #{e}"
+    end
         if user.nil?
             puts "User is nil, need to create user"
             newuser = User.new
