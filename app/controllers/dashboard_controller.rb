@@ -96,17 +96,46 @@ class DashboardController < ApplicationController
             if user.token == params[:token]
                 if params[:batch] == "all"
                     commands = Command.where(username: params[:user])
-                    res = "{ \"commands\":["
-                    commands.each do |c|
-                        res = "#{res} #{c.as_json.to_json},"
-                    end
-                    render plain: "#{res[0..-2]}]}"
-                    return
-                else#batch num
 
+                else#batch num
+                    batchStart = (params[:batch].to_i*10)-10
+                    commands = Command.where(username: params[:user]).slice(batchStart, batchStart+10)
                 end
+                res = "{ \"commands\":["
+                count = 0
+                commands.each do |c|
+                    count += 1
+                    res = "#{res} #{c.as_json.to_json},"
+                end
+                if count > 0
+                    render plain: "#{res[0..-2]}]}"
+                else
+                    render plain: "#{res}]}"
+                end
+                return
             end
         end
+    end
+
+    def add#user, call, response, token, userlevel
+        user = User.find_by(username: params[:user])
+        if !user.nil?
+            duplicate = Command.find_by(username: params[:user], call: params[:call])
+            if duplicate.nil?
+                newcommand = Command.new
+                newcommand.call = params[:call]
+                newcommand.response = params[:response]
+                newcommand.username = params[:user]
+                newcommand.userlevel = params[:userlevel]
+                newcommand.save
+                render plain: "Success"
+                return
+            else
+                render plain: "Duplicate"
+                return
+            end
+        end
+        render plain: "No user"
     end
 end
 

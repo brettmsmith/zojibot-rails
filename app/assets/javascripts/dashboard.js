@@ -32,14 +32,14 @@ function load(){//TODO: Fix this hack
 }
 //});
 
-function getCommands(batch){
+function getCommands(batch, fun){
+    console.log("Getting page "+batch);
     $.ajax({
         url: base+"/commands",
         data: {user:username, token: usertoken, batch: batch}
     }).done(function(data){
-        console.log("Commands response: "+data)
-        if(data != "{}")
-        return JSON.parse(data);
+        console.log("Commands response: "+data);
+        fun(JSON.parse(data));
     })
 }
 
@@ -87,8 +87,22 @@ function botLogic(data){
     }
 }
 
-function loadCommands(commands){
-    commands.commands[]
+function loadCommands(data){
+    for (var i = 1; i <= data.commands.length; i++) {
+        $("#call"+i).html(data.commands[i-1].call);
+        $("#res"+i).html(data.commands[i-1].response);
+        $("#userlevel"+i).html(data.commands[i-1].userlevel);
+        $("#call"+i).show();
+        $("#res"+i).show();
+        $("#userlevel"+i).show();
+    }
+    if(data.commands.length < 10){
+        for (var i = data.commands.length+1; i <= 10; i++) {
+            $("#call"+i).hide();
+            $("#res"+i).hide();
+            $("#userlevel"+i).hide();
+        }
+    }
 }
 
 function toggleBot(){//get pid, if 0, start the bot, otherwise stop the bot
@@ -112,7 +126,7 @@ function commandclick(){
     $("#statustab").removeClass("active");
     $("#settingstab").removeClass("active");
     $("#commandtab").addClass("active");
-    loadCommands(getCommands(page));
+    json = getCommands(page, loadCommands);
 }
 
 function settingsclick(){

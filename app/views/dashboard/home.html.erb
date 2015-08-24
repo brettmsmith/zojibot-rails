@@ -29,11 +29,12 @@
                 <th>Response</th>
                 <th>User level</th>
             </tr>
-            <%Command.where(username: session[:name]).each do |c|#batches/replace with js%>
+
+            <%(1..10).each do |i|%>
                 <tr>
-                    <td><%=c.call%></td>
-                    <td><%=c.response%></td>
-                    <td><%=c.userlevel%></td>
+                    <td id="call<%=i%>">call</td>
+                    <td id="res<%=i%>">res</td>
+                    <td id="userlevel<%=i%>">userlevel</td>
                 </tr>
             <%end%>
             <tr>
