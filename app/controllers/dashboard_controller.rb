@@ -7,7 +7,6 @@ class DashboardController < ApplicationController
     end
 
     def login
-        #redirect to twitch login (redirect_to())
         @redirect = 'http://zojibot.herokuapp.com/callback'
         #@redirect = "http://localhost:3000/callback"
         puts "Session token: #{session[:token]}"

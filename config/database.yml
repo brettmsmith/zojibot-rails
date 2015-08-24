@@ -23,6 +23,8 @@ default: &default
   host: localhost
   username: user
   password: app-dev
+  #username: brett
+  #password: admin
 
 development:
   <<: *default
