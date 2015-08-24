@@ -15,7 +15,8 @@
 //I could have a pid var I set at the beginning and set by getting from app
 //Later I could set up an semi constant alarm thing to make sure nothing has changed
 var pid;
-var base = "http://localhost:3000"
+//var base = "http://localhost:3000"
+var base = "http://zojibot.herokuapp.com"
 var page = 1;
 
 //$(document).ready(function(){
