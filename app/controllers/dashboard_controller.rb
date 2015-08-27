@@ -73,10 +73,14 @@ class DashboardController < ApplicationController
         if !params[:user].nil?
             user = User.find_by(username: params[:user])
             if user.token == params[:token]
+                btoken = ('a'..'z').to_a.shuffle[0,8].join
                 bot = fork do
-                    exec "python bot.py #{params[:user]}"
+                    exec "python bot.py #{params[:user]} #{btoken}"
                 end
+                puts "Bot pid: #{bot}"
                 user.pid = bot
+                user.bottoken = btoken
+                user.save
                 Process.detach(bot)
                 render plain: "Success"
                 return
@@ -89,8 +93,16 @@ class DashboardController < ApplicationController
         if !params[:user].nil?
             user = User.find_by(username: params[:user])
             if user.pid != 0 && user.token == params[:token]#TODO: Need to solve if bot doesn't die
-                Process.kill("SIGTERM", user.pid)
+                begin
+                    Process.kill("SIGTERM", user.pid)
+                rescue
+                    user.pid = 0
+                    user.save
+                    render plain: "Success"
+                    return
+                end
                 user.pid = 0
+                user.save
                 render plain: "Success"
                 return
             end
@@ -101,13 +113,19 @@ class DashboardController < ApplicationController
     def commands#should be given either all or a number representing the nth batch of 10
         if !params[:user].nil?
             user = User.find_by(username: params[:user])
-            if user.token == params[:token]
+            puts "Username checked, user found: #{user.username}"
+            puts "User's token: #{user.token}; User's bot token: #{user.bottoken}"
+            if user.token == params[:token] || user.bottoken == params[:bottoken]
+                puts "Token checked"
                 if params[:batch] == "all"
                     commands = Command.where(username: params[:user])
 
                 else#batch num
                     batchStart = (params[:batch].to_i*10)-10
                     commands = Command.where(username: params[:user]).slice(batchStart, batchStart+10)
+                end
+                if commands.nil?
+                    puts "No commands found"
                 end
                 res = "{ \"commands\":["
                 count = 0
@@ -123,6 +141,7 @@ class DashboardController < ApplicationController
                 return
             end
         end
+        render plain: "Error getting commands"
     end
 
     def add#user, call, response, token, userlevel

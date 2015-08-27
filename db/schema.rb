@@ -30,6 +30,7 @@ ActiveRecord::Schema.define(version: 20150811220231) do
     t.integer  "pid"
     t.string   "token"
     t.integer  "command_id"
+    t.string   "bottoken"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

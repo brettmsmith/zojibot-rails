@@ -5,6 +5,7 @@ class CreateUsers < ActiveRecord::Migration
         t.integer :pid
         t.string :token
         t.references :command
+        t.string :bottoken
       t.timestamps null: false
     end
   end

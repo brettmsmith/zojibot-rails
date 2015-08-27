@@ -89,6 +89,7 @@ function botLogic(data){
 }
 
 function loadCommands(data){
+    console.log("Load commands raw: "+data);
     for (var i = 1; i <= data.commands.length; i++) {
         $("#call"+i).html(data.commands[i-1].call);
         $("#res"+i).html(data.commands[i-1].response);

@@ -1,22 +1,21 @@
 #! /usr/bin/python
-import sys, socket, string, re, os
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
-#from webapp import Command
+import sys, socket, string, re, os, requests, json
 
-global HOST, PORT, PASS, NICK, CHANNEL, db
+
+global HOST, PORT, PASS, NICK, CHANNEL, db, token
 HOST = "irc.twitch.tv"
 PORT = 6667
 PASS = os.environ['bot_pass']
 NICK = 'zojibot'
 
-app = Flask(__name__) #TODO: get some real sqlalchemy in here
-app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]#'postgresql://localhost/test.db'
-db = SQLAlchemy(app)
+#app = Flask(__name__) #TODO: get some real sqlalchemy in here
+#app.config['SQLALCHEMY_DATABASE_URI'] = os.environ["DATABASE_URL"]#'postgresql://localhost/test.db'
+#db = SQLAlchemy(app)
 
 #TODO: Make a stop bot command from chat?
 try:
     CHANNEL = sys.argv[1]
+    token = sys.argv[2]
 except:
     raise Exception("No stream input")
 
@@ -35,19 +34,17 @@ global commands
 commands = {}
 
 def loadUserCommands(f):#get user's config file and load their commands checking chat
-    global commands
-    rawCommands = Command.query.filter_by(username=f)
-    commandRE = 'Command:\s(.+)\sResponse:'
-    responseRE = 'Response:\s(.+)\sCommand\sID'
-    for line in rawCommands:
-        #print 'Grabbing in: '+repr(line)
-        cre = re.search(commandRE, repr(line)).group(1)
-        rre = re.search(responseRE, repr(line)).group(1)
-        #print 'Command: '+cre
-        #print 'Response: '+rre
-        commands[cre] = rre
-        #print 'Got '+commands[re.search(commandRE, repr(line))]+' for '+re.search(commandRE, repr(line))
-
+    global commands, token, CHANNEL
+    #base = 'http://localhost:3000/commands'
+    base = 'http://zojibot.herokuapp.com/commands'
+    data = {'bottoken': token, 'user': CHANNEL, 'batch': 'all'}
+    r = requests.get(base, params=data)
+    print 'Bot got response from commands: '+r.text
+    response = json.loads(r.text)
+    #print "Response: "+response
+    for obj in response['commands']:
+        print 'Call: '+str(obj['call'])+'; Response: '+str(obj['response'])
+        commands[obj['call']] = obj['response']
 
 def checkSpam(line, name):#TODO: t/o links, more
     pass
