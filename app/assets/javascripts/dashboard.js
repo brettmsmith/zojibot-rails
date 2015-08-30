@@ -29,7 +29,7 @@ function load(){//TODO: Fix this hack
     $("#commands").hide();
     $("#settings").hide();
     checkBotStatus(pageLoad);
-    //formid.submit(callback) for adding a command
+    $("#commandform").submit(addCommand);
 }
 //});
 
@@ -49,6 +49,16 @@ function checkBotStatus(fun){
         url: base+"/bot",//do I need to add a random number to anti-cache?
         data:{user: username, token: usertoken}
     }).done(fun);
+}
+
+function addCommand(event){//TODO: Reset the text boxes
+    console.log("Call: "+$("#addcall").val())
+    event.preventDefault();
+    console.log("Modonly: "+$("#addmodonly").val());
+    $.ajax({
+        url: base+"/commands/add",
+        data:{user: username, call:$("#addcall").val(), response:$("#addresponse").val(), token:usertoken, userlevel:$("#addmodonly").val()}
+    }).done(commandclick);
 }
 
 function pageLoad(data){
