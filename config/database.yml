@@ -21,10 +21,10 @@ default: &default
   # http://guides.rubyonrails.org/configuring.html#database-pooling
   #pool: 5
   host: localhost
-  username: user
-  password: app-dev
-  #username: brett
-  #password: admin
+  #username: user
+  #password: app-dev
+  username: brett
+  password: admin
 
 development:
   <<: *default

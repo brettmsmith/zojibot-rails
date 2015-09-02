@@ -35,8 +35,8 @@ commands = {}
 
 def loadUserCommands(f):#get user's config file and load their commands checking chat
     global commands, token, CHANNEL
-    #base = 'http://localhost:3000/commands'
-    base = 'http://zojibot.herokuapp.com/commands'
+    base = 'http://localhost:3000/commands'
+    #base = 'http://zojibot.herokuapp.com/commands'
     data = {'bottoken': token, 'user': CHANNEL, 'batch': 'all'}
     r = requests.get(base, params=data)
     print 'Bot got response from commands: '+r.text
