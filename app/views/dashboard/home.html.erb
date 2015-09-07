@@ -31,6 +31,15 @@
                     <td id="call<%=i%>">call</td>
                     <td id="res<%=i%>">res</td>
                     <td id="userlevel<%=i%>">userlevel</td>
+                    <td id="edit<%=i%>"><button onclick="showRow(<%=i%>)" id="editbtn<%=i%>" class="btn btn-primary">Edit</button></td>
+                </tr>
+                <tr id="editform<%=i%>" style="display: none;">
+                    <!--<form>-->
+                        <td><input type="text" id="editcall<%=i%>" class="form-control"/></td>
+                        <td><input type="text" id="editres<%=i%>" class="form-control"/></td>
+                        <td><label>Mod only?<input type="checkbox" id="edituserlevel<%=i%>" class="form-control"></input></label></td>
+                        <td><button onclick="editCommand(<%=i%>)" class="btn btn-primary">Save</button></td>
+                    <!--</form>-->
                 </tr>
             <%end%>
             <tr>

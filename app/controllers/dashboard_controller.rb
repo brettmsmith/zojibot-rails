@@ -148,7 +148,7 @@ class DashboardController < ApplicationController
         user = User.find_by(username: params[:user])
         if !user.nil?
             duplicate = Command.find_by(username: params[:user], call: params[:call])
-            if duplicate.nil?
+            if duplicate.nil? && user.token == params[:token]
                 newcommand = Command.new
                 newcommand.call = params[:call]
                 newcommand.response = params[:response]
@@ -163,6 +163,21 @@ class DashboardController < ApplicationController
             end
         end
         render plain: "No user"
+    end
+
+    def edit
+        user = User.find_by(username: params[:user])
+        if !user.nil? && user.token == params[:token]
+            command = Command.find_by(username: params[:user], call: params[:call])
+            if !command.nil?
+                command.response = params[:response]
+                command.userlevel = params[:userlevel]
+                command.save
+                render plain: "Success"
+                return
+            end
+        end
+        render plain: "Error"
     end
 end
 

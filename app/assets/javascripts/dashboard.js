@@ -15,9 +15,10 @@
 //I could have a pid var I set at the beginning and set by getting from app
 //Later I could set up an semi constant alarm thing to make sure nothing has changed
 var pid;
-//var base = "http://localhost:3000"
-var base = "http://zojibot.herokuapp.com"
+var base = "http://localhost:3000"
+//var base = "http://zojibot.herokuapp.com"
 var page = 1;
+var loaded = false;
 
 //$(document).ready(function(){
 function load(){//TODO: Fix this hack
@@ -98,23 +99,54 @@ function botLogic(data){
     }
 }
 
-function loadCommands(data){
+function loadCommands(data){//TODO: add in edit link stuff; on edit.click(fill in that i's placeholders and show the form)
     console.log("Load commands raw: "+data);
-    for (var i = 1; i <= data.commands.length; i++) {
-        $("#call"+i).html(data.commands[i-1].call);
-        $("#res"+i).html(data.commands[i-1].response);
-        $("#userlevel"+i).html(data.commands[i-1].userlevel);
-        $("#call"+i).show();
-        $("#res"+i).show();
-        $("#userlevel"+i).show();
-    }
     if(data.commands.length < 10){
         for (var i = data.commands.length+1; i <= 10; i++) {
             $("#call"+i).hide();
             $("#res"+i).hide();
             $("#userlevel"+i).hide();
+            $("#edit"+i).hide();
         }
     }
+    for (var i = 1; i <= data.commands.length; i++) {//TODO: add delete command buttons
+        $("#call"+i).html(data.commands[i-1].call);
+        $("#editcall"+i).val(data.commands[i-1].call);
+        $("#res"+i).html(data.commands[i-1].response);
+        $("#editres"+i).val(data.commands[i-1].response);
+        $("#userlevel"+i).html(data.commands[i-1].userlevel);
+        $("#edituserlevel"+i).val(data.commands[i-1].userlevel);
+        /*$("#editbtn"+i).click(function(){
+            $("#editform"+i).show();
+        });*/
+
+        $("#call"+i).show();
+        $("#res"+i).show();
+        $("#userlevel"+i).show();
+        $("#edit"+i).show();
+        $("#editform"+i).hide();
+    }
+}
+/*For editing commands, I could do text boxes with each command, but it would make more
+stuff to load and handle client side. When edit is clicked, change from showing text to
+showing the edit text boxes
+*/
+
+function showRow(i){
+    console.log("Showing row: "+i);
+    $("#editform"+i).show();
+}
+
+function editCommand(i){
+    $.ajax({
+        url: base+"/commands/edit",
+        data: {user: username, token: usertoken, call:$("#editcall"+i).val(), userlevel:$("#edituserlevel"+i).val(), response: $("#editres"+i).val()}
+
+    }).done(function(data){
+        console.log("Edit command response: "+data)
+        loaded = false;
+        commandclick();
+    })
 }
 
 function toggleBot(){//get pid, if 0, start the bot, otherwise stop the bot
@@ -138,7 +170,10 @@ function commandclick(){
     $("#statustab").removeClass("active");
     $("#settingstab").removeClass("active");
     $("#commandtab").addClass("active");
-    json = getCommands(page, loadCommands);
+    if(!loaded){
+        json = getCommands(page, loadCommands);
+        loaded = true;
+    }
 }
 
 function settingsclick(){
