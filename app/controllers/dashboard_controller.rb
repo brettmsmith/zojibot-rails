@@ -7,11 +7,11 @@ class DashboardController < ApplicationController
     end
 
     def login
-        #@redirect = 'http://zojibot.herokuapp.com/callback'
-        @redirect = "http://localhost:3000/callback"
+        @redirect = 'http://zojibot.herokuapp.com/callback'
+        #@redirect = "http://localhost:3000/callback"
         puts "Session token: #{session[:token]}"
         if session[:token].nil?
-            redirect_to "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=#{ENV['TCLIENTID']}&redirect_uri=#{@redirect}"
+            redirect_to "https://api.twitch.tv/kraken/oauth2/authorize?response_type=code&client_id=#{ENV['CLIENTID']}&redirect_uri=#{@redirect}"
             return
         else
             redirect_to "/dashboard"
@@ -184,10 +184,10 @@ end
 class TwitchAPI
     def initialize()
         @base = 'https://api.twitch.tv/kraken'
-        #@redirect = 'http://zojibot.herokuapp.com/callback'
-        @redirect = 'http://localhost:3000/callback'
-        @clientid = ENV['TCLIENTID']
-        @clientsecret = ENV['TCLIENTSECRET']
+        @redirect = 'http://zojibot.herokuapp.com/callback'
+        #@redirect = 'http://localhost:3000/callback'
+        @clientid = ENV['CLIENTID']
+        @clientsecret = ENV['CLIENTSECRET']
     end
 
     def getName(token)
