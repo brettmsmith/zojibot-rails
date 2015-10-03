@@ -31,6 +31,9 @@ function load(){//TODO: Fix this hack
     $("#settings").hide();
     checkBotStatus(pageLoad);
     $("#commandform").submit(addCommand);
+    $("#navbaruser").html(username);
+    $("#navbarlogout").show();
+    $("#navbarli").show();
 }
 //});
 
@@ -56,6 +59,7 @@ function addCommand(event){//TODO: Reset the text boxes
     console.log("Call: "+$("#addcall").val())
     event.preventDefault();
     console.log("Modonly: "+$("#addmodonly").val());
+    loaded = false;
     $.ajax({
         url: base+"/commands/add",
         data:{user: username, call:$("#addcall").val(), response:$("#addresponse").val(), token:usertoken, userlevel:$("#addmodonly").val()}
@@ -103,10 +107,11 @@ function loadCommands(data){//TODO: add in edit link stuff; on edit.click(fill i
     console.log("Load commands raw: "+data);
     if(data.commands.length < 10){
         for (var i = data.commands.length+1; i <= 10; i++) {
-            $("#call"+i).hide();
+            /*$("#call"+i).hide();
             $("#res"+i).hide();
             $("#userlevel"+i).hide();
-            $("#edit"+i).hide();
+            $("#edit"+i).hide();*/
+            $("#row"+i).hide();
         }
     }
     for (var i = 1; i <= data.commands.length; i++) {//TODO: add delete command buttons
@@ -120,11 +125,13 @@ function loadCommands(data){//TODO: add in edit link stuff; on edit.click(fill i
             $("#editform"+i).show();
         });*/
 
-        $("#call"+i).show();
+        /*$("#call"+i).show();
         $("#res"+i).show();
         $("#userlevel"+i).show();
         $("#edit"+i).show();
         $("#editform"+i).hide();
+        */
+        $("#row"+i).show();
     }
 }
 /*For editing commands, I could do text boxes with each command, but it would make more
@@ -135,6 +142,8 @@ showing the edit text boxes
 function showRow(i){
     console.log("Showing row: "+i);
     $("#editform"+i).show();
+    $("#editbtn"+i).addClass("noshow");
+    $("#deletebtn"+i).removeClass("noshow");
 }
 
 function editCommand(i){
@@ -145,8 +154,25 @@ function editCommand(i){
     }).done(function(data){
         console.log("Edit command response: "+data)
         loaded = false;
+        $("#editbtn"+i).removeClass("noshow");
+        $("#deletebtn"+i).addClass("noshow");
         commandclick();
     })
+}
+
+function deleteRow(i){//TODO: Ask for confirmation of delete
+    console.log("Delete request: "+$("#call"+i).html());
+    $.ajax({
+        url: base+"/commands/delete",
+        data: {user: username, token: usertoken, call:$("#call"+i).html()}
+    }).done(function(data){
+        console.log("Delete command response: "+data);
+        $("#editbtn"+i).removeClass("noshow");
+        $("#deletebtn"+i).addClass("noshow");
+        $("#editform"+i).hide();
+        loaded = false;
+        commandclick();
+    });
 }
 
 function toggleBot(){//get pid, if 0, start the bot, otherwise stop the bot
@@ -173,6 +199,8 @@ function commandclick(){
     if(!loaded){
         json = getCommands(page, loadCommands);
         loaded = true;
+        $("#addcall").val("");
+        $("#addresponse").val("");
     }
 }
 

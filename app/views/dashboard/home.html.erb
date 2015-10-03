@@ -11,7 +11,6 @@
 <div class="container-fluid" id="status">
     <div class="row">
         <div class="col-md-4">
-            <p id="test"><%=session[:name]%>'s page</p>
             <button id="botbutton" onclick="toggleBot()" class="btn btn-default">Start bot</button><%#use #id.html jquery to change button text%>
         </div>
     </div>
@@ -24,14 +23,16 @@
                 <th>Command</th>
                 <th>Response</th>
                 <th>User level</th>
+                <th></th>
             </tr>
 
             <%(1..10).each do |i|%>
-                <tr>
+                <tr id="row<%=i%>">
                     <td id="call<%=i%>">call</td>
                     <td id="res<%=i%>">res</td>
                     <td id="userlevel<%=i%>">userlevel</td>
                     <td id="edit<%=i%>"><button onclick="showRow(<%=i%>)" id="editbtn<%=i%>" class="btn btn-primary">Edit</button></td>
+                    <td id="delete<%=i%>"><button onclick="deleteRow(<%=i%>)" id="deletebtn<%=i%>" class="btn btn-primary noshow">Delete</button></td>
                 </tr>
                 <tr id="editform<%=i%>" style="display: none;">
                     <!--<form>-->

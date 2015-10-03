@@ -64,5 +64,6 @@ Rails.application.routes.draw do
   get '/commands' => 'dashboard#commands'
   get '/commands/add' => 'dashboard#add'
   get '/commands/edit' => 'dashboard#edit'
+  get '/commands/delete' => 'dashboard#delete'
   get '/progress' => 'dashboard#progress'
 end

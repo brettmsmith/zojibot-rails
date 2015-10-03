@@ -179,6 +179,21 @@ class DashboardController < ApplicationController
         end
         render plain: "Error"
     end
+
+    def delete
+        user = User.find_by(username: params[:user])
+        if !user.nil? && user.token == params[:token]
+            command = Command.find_by(username: params[:user], call: params[:call])
+            if !command.nil?
+                command.destroy
+                render plain: "Success"
+                return
+            end
+            render plain: "Nothing to destroy"
+            return
+        end
+        render plain: "Error"
+    end
 end
 
 class TwitchAPI
